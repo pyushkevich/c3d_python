@@ -1,0 +1,42 @@
+[build-system]
+requires = ["scikit-build-core"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+build-dir = "pipbuild/{wheel_tag}"
+
+[project]
+name = "picsl_c3d"
+version = "1.0.1"
+description = "Convert3D family of tools from the Penn Image Computing and Science Lab (PICSL)"
+readme = "README.md"
+license.file = "LICENSE"
+authors = [
+  { name = "Paul A. Yushkevich", email = "pyushkevich@gmail.com" },
+]
+maintainers = [
+  { name = "Paul A. Yushkevich", email = "pyushkevich@gmail.com" },
+]
+requires-python = ">=3.8"
+
+dependencies = [
+  "typing_extensions",
+]
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: BSD License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+
+[project.urls]
+Homepage = "https://github.com/pyushkevich/c3d"
+Documentation = "https://github.com/pyushkevich/c3d/blob/master/doc/c3d.md"
+
+
