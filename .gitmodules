@@ -2,3 +2,6 @@
 	path = external/pybind11
 	url = https://github.com/pybind/pybind11.git
 	branch = stable
+[submodule "external/c3d"]
+	path = external/c3d
+	url = https://github.com/pyushkevich/c3d.git

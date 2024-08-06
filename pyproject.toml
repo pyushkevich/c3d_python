@@ -4,6 +4,10 @@ build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
 build-dir = "pipbuild/{wheel_tag}"
+cmake.build-type = "Release"
+
+[tool.scikit-build.cmake.define]
+FETCH_DEPENDENCIES = {env="FETCH_DEPENDENCIES", default="ON"}
 
 [project]
 name = "picsl_c3d"
@@ -21,6 +25,8 @@ requires-python = ">=3.8"
 
 dependencies = [
   "typing_extensions",
+  "SimpleITK",
+  "numpy"
 ]
 
 classifiers = [
