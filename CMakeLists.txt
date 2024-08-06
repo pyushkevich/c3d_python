@@ -6,7 +6,10 @@ ENABLE_LANGUAGE(CXX)
 
 # Specify the C++ standard
 SET(CMAKE_CXX_STANDARD 17)
-SET(CMAKE_CXX_STANDARD_REQUIRED True)
+SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Avoid -fPIC errors
+SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Option, whether to fetch external dependencies or to find locally
 set(FETCH_DEPENDENCIES OFF CACHE BOOL "Fetch dependencies (ITK and Convert3D)?")
