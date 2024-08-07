@@ -8,5 +8,4 @@ cmake \
     -DCMAKE_INSTALL_PREFIX=./install \
     ..
 
-echo "NProc = $(nproc)"
 make && make install
