@@ -7,4 +7,6 @@ cmake \
     -DDEPENDENCIES_ONLY=ON \
     -DCMAKE_INSTALL_PREFIX=./install \
     ..
-make -j$(nproc) && make install
+
+echo "NProc = $(nproc)"
+make && make install
