@@ -25,7 +25,7 @@ jobs:
             submodules: true
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.15.0
+        uses: pypa/cibuildwheel@v2.20.0
         env:
             CIBW_ARCHS_LINUX: x86_64
             CIBW_BUILD_VERBOSITY: 1
