@@ -32,18 +32,18 @@ jobs:
             CIBW_BEFORE_ALL: >
                 mkdir -p ~/.itk &&
                 cd ~/.itk &&
-                git clone https://github.com/InsightSoftwareConsortium/ITK.git &&
+                git clone -b v5.2.1 https://github.com/InsightSoftwareConsortium/ITK.git &&
                 cd ITK &&
                 mkdir build && cd build &&
-                cmake -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MorphologicalContourInterpolation=ON .. &&
+                cmake -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MorphologicalContourInterpolation=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
                 make -j$(nproc) &&
-                sudo make install &&
+                make install &&
                 mkdir -p ~/.c3d &&
                 cd ~/.c3d &&
-                git clone https://github.com/pyushkevich/c3d.git &&
+                git clone -b master https://github.com/pyushkevich/c3d.git &&
                 cd c3d &&
                 mkdir build && cd build &&
-                cmake -DITK_DIR=~/.itk/build .. &&
+                cmake -DITK_DIR=/usr/local/lib/cmake/ITK-5.2 -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
                 make -j$(nproc) &&
-                sudo make install
-            CIBW_ENVIRONMENT: FETCH_DEPENDENCIES=OFF CMAKE_PREFIX_PATH=/usr/local/lib/ITK:/usr/local/lib/c3d
+                make install
+            CIBW_ENVIRONMENT: FETCH_DEPENDENCIES=OFF CMAKE_PREFIX_PATH=/usr/local/lib/cmake/ITK-5.2:/usr/local/lib/cmake/Convert3D
