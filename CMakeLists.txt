@@ -13,6 +13,7 @@ SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Option, whether to fetch external dependencies or to find locally
 set(FETCH_DEPENDENCIES OFF CACHE BOOL "Fetch dependencies (ITK and Convert3D)?")
+set(DEPENDENCIES_ONLY OFF CACHE BOOL "Only build dependencies, skip main build")
 
 # If requested, fetch the dependencies
 IF(FETCH_DEPENDENCIES)
@@ -40,8 +41,6 @@ IF(FETCH_DEPENDENCIES)
     )
     FetchContent_MakeAvailable(Convert3D)
     INCLUDE_DIRECTORIES(${convert3d_SOURCE_DIR}/api)
-    # SET(Convert3D_DIR ${c3d_BINARY_DIR})
-    # FIND_PACKAGE(Convert3D REQUIRED)
     
 ELSE()
 
@@ -53,18 +52,14 @@ ELSE()
 
 ENDIF()
 
-# Build C3D as a sub-project
-# SET(CONVERT3D_BUILD_AS_SUBPROJECT ON CACHE BOOL "" FORCE)
-
-# Set correct output directories
-# ADD_SUBDIRECTORY(external/c3d)
-
 # Python bindings
-SET(PYBIND11_FINDPYTHON ON)
-ADD_SUBDIRECTORY(external/pybind11)
-INCLUDE_DIRECTORIES(external/pybind11)
-# INCLUDE_DIRECTORIES(external/c3d/api)
-pybind11_add_module(picsl_c3d src/ConvertPythonBindings.cxx)
-TARGET_INCLUDE_DIRECTORIES(picsl_c3d PRIVATE ${Convert3D_INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES(picsl_c3d PUBLIC ${ITK_LIBRARIES} cnd_api)
-install(TARGETS picsl_c3d DESTINATION .)
+IF(NOT DEPENDENCIES_ONLY)
+    SET(PYBIND11_FINDPYTHON ON)
+    ADD_SUBDIRECTORY(external/pybind11)
+    INCLUDE_DIRECTORIES(external/pybind11)
+    # INCLUDE_DIRECTORIES(external/c3d/api)
+    pybind11_add_module(picsl_c3d src/ConvertPythonBindings.cxx)
+    TARGET_INCLUDE_DIRECTORIES(picsl_c3d PRIVATE ${Convert3D_INCLUDE_DIRS})
+    TARGET_LINK_LIBRARIES(picsl_c3d PUBLIC ${ITK_LIBRARIES} cnd_api)
+    install(TARGETS picsl_c3d DESTINATION .)
+ENDIF()

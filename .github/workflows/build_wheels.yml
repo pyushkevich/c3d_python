@@ -29,21 +29,6 @@ jobs:
         env:
             CIBW_ARCHS_LINUX: x86_64
             CIBW_BUILD_VERBOSITY: 1
-            CIBW_BEFORE_ALL: >
-                mkdir -p ~/.itk &&
-                cd ~/.itk &&
-                git clone -b v5.2.1 https://github.com/InsightSoftwareConsortium/ITK.git &&
-                cd ITK &&
-                mkdir build && cd build &&
-                cmake -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MorphologicalContourInterpolation=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
-                make -j$(nproc) &&
-                make install &&
-                mkdir -p ~/.c3d &&
-                cd ~/.c3d &&
-                git clone -b master https://github.com/pyushkevich/c3d.git &&
-                cd c3d &&
-                mkdir build && cd build &&
-                cmake -DITK_DIR=/usr/local/lib/cmake/ITK-5.2 -DCMAKE_POSITION_INDEPENDENT_CODE=ON .. &&
-                make -j$(nproc) &&
-                make install
-            CIBW_ENVIRONMENT: FETCH_DEPENDENCIES=OFF CMAKE_PREFIX_PATH=/usr/local/lib/cmake/ITK-5.2:/usr/local/lib/cmake/Convert3D
+            CIBW_BEFORE_ALL: bash .github/workflows/prebuild.sh
+            CIBW_BEFORE_ALL_WINDOWS: .github/workflows/prebuild_win.bat
+            CIBW_ENVIRONMENT: FETCH_DEPENDENCIES=OFF CMAKE_PREFIX_PATH=buildext/install/lib/cmake/ITK-5.2:buildext/install/lib/cmake/Convert3D
