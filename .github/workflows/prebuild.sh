@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x -e 
 
-mkdir -p buildext/install && cd buildext
+mkdir -p be/install && cd be
 cmake \
     -DFETCH_DEPENDENCIES=ON \
     -DDEPENDENCIES_ONLY=ON \

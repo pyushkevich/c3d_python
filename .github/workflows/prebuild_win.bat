@@ -2,8 +2,8 @@
 setlocal enabledelayedexpansion
 
 REM Create build and install directories
-mkdir buildext\install
-cd buildext
+mkdir be\install
+cd be
 
 REM Run CMake to configure the project
 cmake ^
