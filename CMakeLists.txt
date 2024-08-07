@@ -32,26 +32,38 @@ IF(FETCH_DEPENDENCIES)
     FIND_PACKAGE(ITK CONFIG REQUIRED)
     INCLUDE(${ITK_USE_FILE})
 
+    # Dependency: Convert3D
+    FetchContent_Declare(
+        Convert3D
+        GIT_REPOSITORY https://github.com/pyushkevich/c3d.git
+        GIT_TAG        master
+    )
+    FetchContent_MakeAvailable(Convert3D)
+    INCLUDE_DIRECTORIES(${convert3d_SOURCE_DIR}/api)
+    # SET(Convert3D_DIR ${c3d_BINARY_DIR})
+    # FIND_PACKAGE(Convert3D REQUIRED)
+    
 ELSE()
 
     # Find ITK and C3D
     FIND_PACKAGE(ITK REQUIRED)
-    MESSAGE(STATUS "ITK version ${ITK_VERSION} use file ${ITK_USE_FILE}")
     INCLUDE(${ITK_USE_FILE})
+
+    FIND_PACKAGE(Convert3D REQUIRED)
 
 ENDIF()
 
 # Build C3D as a sub-project
-SET(CONVERT3D_BUILD_AS_SUBPROJECT ON CACHE BOOL "" FORCE)
+# SET(CONVERT3D_BUILD_AS_SUBPROJECT ON CACHE BOOL "" FORCE)
 
 # Set correct output directories
-ADD_SUBDIRECTORY(external/c3d)
+# ADD_SUBDIRECTORY(external/c3d)
 
 # Python bindings
 SET(PYBIND11_FINDPYTHON ON)
 ADD_SUBDIRECTORY(external/pybind11)
 INCLUDE_DIRECTORIES(external/pybind11)
-INCLUDE_DIRECTORIES(external/c3d/api)
+# INCLUDE_DIRECTORIES(external/c3d/api)
 pybind11_add_module(picsl_c3d src/ConvertPythonBindings.cxx)
 TARGET_INCLUDE_DIRECTORIES(picsl_c3d PRIVATE ${Convert3D_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(picsl_c3d PUBLIC ${ITK_LIBRARIES} cnd_api)

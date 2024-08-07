@@ -16,6 +16,7 @@ jobs:
 
     env:
         CIBW_ARCHS_LINUX: x86_64
+        CIBW_BUILD_VERBOSITY: 1
 
     steps:
       - name: Checkout code
@@ -23,31 +24,26 @@ jobs:
         with:
             submodules: true
 
-      - name: Cache ITK build
-        uses: actions/cache@v2
-        id: itk-cache
-        with:
-          path: |
-            ~/.itk
-            /usr/local/lib/ITK
-          key: ${{ runner.os }}-itk-${{ hashFiles('**/ITKConfig.cmake') }}
-          restore-keys: |
-            ${{ runner.os }}-itk-
-
-      - name: Build ITK if not cached
-        if: steps.itk-cache.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p ~/.itk
-          cd ~/.itk
-          git clone https://github.com/InsightSoftwareConsortium/ITK.git
-          cd ITK
-          mkdir build && cd build
-          cmake -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MorphologicalContourInterpolation=ON ..
-          make -j$(nproc)
-          sudo make install
-
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.15.0
         env:
-            CMAKE_PREFIX_PATH: /usr/local/lib/ITK
-            FETCH_DEPENDENCIES: OFF
+            CIBW_ARCHS_LINUX: x86_64
+            CIBW_BUILD_VERBOSITY: 1
+            CIBW_BEFORE_ALL: >
+                mkdir -p ~/.itk &&
+                cd ~/.itk &&
+                git clone https://github.com/InsightSoftwareConsortium/ITK.git &&
+                cd ITK &&
+                mkdir build && cd build &&
+                cmake -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF -DModule_MorphologicalContourInterpolation=ON .. &&
+                make -j$(nproc) &&
+                sudo make install &&
+                mkdir -p ~/.c3d &&
+                cd ~/.c3d &&
+                git clone https://github.com/pyushkevich/c3d.git &&
+                cd c3d &&
+                mkdir build && cd build &&
+                cmake -DITK_DIR=~/.itk/build .. &&
+                make -j$(nproc) &&
+                sudo make install
+            CIBW_ENVIRONMENT: FETCH_DEPENDENCIES=OFF CMAKE_PREFIX_PATH=/usr/local/lib/ITK:/usr/local/lib/c3d
