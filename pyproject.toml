@@ -8,7 +8,7 @@ cmake.build-type = "Release"
 
 [tool.scikit-build.cmake.define]
 FETCH_DEPENDENCIES = {env="FETCH_DEPENDENCIES", default="ON"}
-CMAKE_PREFIX_PATH = {env="CMAKE_PREFIX_PATH", default="ON"}
+CMAKE_PREFIX_PATH = {env="CMAKE_PREFIX_PATH" }
 
 [project]
 name = "picsl_c3d"
