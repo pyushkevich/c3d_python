@@ -14,11 +14,40 @@ jobs:
       matrix:
         os: [ubuntu-20.04, macos-11]
 
+    env:
+        CIBW_ARCHS_LINUX: x86_64
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
             submodules: true
 
+      - name: Cache ITK build
+        uses: actions/cache@v2
+        id: itk-cache
+        with:
+          path: |
+            ~/.itk
+            /usr/local/lib/ITK
+          key: ${{ runner.os }}-itk-${{ hashFiles('**/ITKConfig.cmake') }}
+          restore-keys: |
+            ${{ runner.os }}-itk-
+
+      - name: Build ITK if not cached
+        if: steps.itk-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.itk
+          cd ~/.itk
+          git clone https://github.com/InsightSoftwareConsortium/ITK.git
+          cd ITK
+          mkdir build && cd build
+          cmake ..
+          make -j$(nproc)
+          sudo make install
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.15.0
+        env:
+            CMAKE_PREFIX_PATH: /usr/local/lib/ITK
+            FETCH_DEPENDENCIES: OFF
