@@ -13,6 +13,6 @@ cmake ^
     ..
 
 REM Build the project using all available processors
-cmake --build . --target install -- /j %NUMBER_OF_PROCESSORS%
+cmake --build . --target install -- -m
 
 endlocal
