@@ -8,7 +8,7 @@ cd be
 REM Run CMake to configure the project
 cmake ^
     -DFETCH_DEPENDENCIES=ON ^
-    -DDEPENDENCIES_ONLY=ON ^
+    -DDEPENDENCIES_ONLY=OFF ^
     -DCMAKE_INSTALL_PREFIX=.\install ^
     -DCMAKE_BUILD_TYPE=Release ^
     ..
