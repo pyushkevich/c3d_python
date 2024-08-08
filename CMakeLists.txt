@@ -26,7 +26,7 @@ IF(FETCH_DEPENDENCIES)
     FetchContent_Declare(
         ITK
         GIT_REPOSITORY https://github.com/InsightSoftwareConsortium/ITK.git
-        GIT_TAG        v5.3
+        GIT_TAG        v5.4.0
     )
     FetchContent_MakeAvailable(ITK)
     SET(ITK_DIR ${itk_BINARY_DIR})
