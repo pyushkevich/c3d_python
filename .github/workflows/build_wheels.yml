@@ -32,4 +32,4 @@ jobs:
             CIBW_BEFORE_ALL: bash .github/workflows/prebuild.sh
             CIBW_BEFORE_ALL_WINDOWS: powershell .github/workflows/prebuild_win.bat
             CIBW_ENVIRONMENT: >
-                FETCH_DEPENDENCIES=OFF ITK_DIR=be/install/lib/cmake/ITK-5.2 Convert3D_DIR=be/install/lib/cmake/Convert3D
+                FETCH_DEPENDENCIES=OFF CMAKE_PREFIX_PATH=be/install/lib/cmake/ITK-5.2;be/install/lib/cmake/Convert3D

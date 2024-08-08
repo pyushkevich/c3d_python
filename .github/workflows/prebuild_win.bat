@@ -10,9 +10,12 @@ cmake ^
     -DFETCH_DEPENDENCIES=ON ^
     -DDEPENDENCIES_ONLY=ON ^
     -DCMAKE_INSTALL_PREFIX=.\install ^
+    -DCMAKE_BUILD_TYPE=Release ^
     ..
+if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
 
 REM Build the project using all available processors
 cmake --build . --target install -- -m
+if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
 
 endlocal
