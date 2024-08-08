@@ -33,7 +33,7 @@ jobs:
             CIBW_BEFORE_ALL: bash .github/workflows/prebuild.sh
             CIBW_BEFORE_ALL_WINDOWS: powershell .github/workflows/prebuild_win.bat
             CIBW_ENVIRONMENT: >
-                FETCH_DEPENDENCIES=OFF CMAKE_PREFIX_PATH=be/install
+                FETCH_DEPENDENCIES=OFF CMAKE_PREFIX_PATH=be/install VERBOSE=1
 
       - uses: actions/upload-artifact@v4
         with:
