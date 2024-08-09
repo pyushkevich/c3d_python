@@ -11,6 +11,7 @@ cmake ^
     -DDEPENDENCIES_ONLY=OFF ^
     -DCMAKE_INSTALL_PREFIX=.\install ^
     -DCMAKE_BUILD_TYPE=Release ^
+    -A x64 ^
     ..
 if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
 
