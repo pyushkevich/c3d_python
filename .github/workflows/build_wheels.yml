@@ -12,12 +12,18 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-2019]
+        os: [ubuntu-20.04,macos-13,macos-14,windows-2019]
+        include:
+          - os: windows-2019
+            arch: [AMD64,x86]
+          - os: ubuntu-20.04
+            arch: [x86_64]
 
     env:
-        CIBW_ARCHS_LINUX: x86_64
-        CIBW_SKIP: "*musllinux*"
-        CIBW_BUILD_VERBOSITY: 1
+      CIBW_ARCHS_LINUX: ${{ matrix.arch }}
+      CIBW_ARCHS_WINDOWS: ${{ matrix.arch }}
+      CIBW_SKIP: "*musllinux*"
+      CIBW_BUILD_VERBOSITY: 1
 
     steps:
       - name: Checkout code
@@ -28,11 +34,9 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.20.0
         env:
-            CIBW_ARCHS_LINUX: x86_64
-            CIBW_ARCHS_WINDOWS: AMD64
             CIBW_BUILD_VERBOSITY: 1
             CIBW_BEFORE_ALL: bash .github/workflows/prebuild.sh
-            CIBW_BEFORE_ALL_WINDOWS: powershell .github/workflows/prebuild_win.bat
+            CIBW_BEFORE_ALL_WINDOWS: powershell .github/workflows/prebuild_win.bat ${{ matrix.arch }}
             CIBW_ENVIRONMENT: >
                 FETCH_DEPENDENCIES=OFF CMAKE_PREFIX_PATH=be/install VERBOSE=1
 
