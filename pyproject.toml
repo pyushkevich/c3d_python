@@ -12,7 +12,7 @@ CMAKE_PREFIX_PATH = {env="CMAKE_PREFIX_PATH"}
 
 [project]
 name = "picsl_c3d"
-version = "1.0.3"
+version = "1.4.2.0"
 description = "Convert3D family of tools from the Penn Image Computing and Science Lab (PICSL)"
 readme = "README.md"
 license.file = "LICENSE"
