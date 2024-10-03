@@ -183,40 +183,58 @@ void instantiate_cnd(py::handle m, const char *name)
   using Convert = ConvertAPI<TPixel, VDim>;
   using Import = ImageImport<TPixel, VDim>;
   using Export = ImageExport<TPixel, VDim>;
+
+  static std::map< std::pair<Convert *, std::string>, py::object> obj_map;
+
   py::class_<Convert>(m, name, "Python API for the PICSL c2d/c3d/c4d tool")
-      .def(py::init<>([]() {
-        auto *c = new Convert();
-        return c;
-      }))
-      .def("execute", [](Convert &c, const string &cmd, py::object sout, py::object serr) {
-        py::scoped_ostream_redirect r_out(std::cout, sout);
-        py::scoped_ostream_redirect r_err(std::cerr, serr);
-        c.ExecuteNoFormatting(cmd.c_str());
-      }, "Execute one or more commands using the c3d command line interface",
-      py::arg("command"), 
-      py::arg("out") = py::module_::import("sys").attr("stdout"),
-      py::arg("err") = py::module_::import("sys").attr("stdout")
-      ) 
-      .def("add_image", [](Convert &c, const string &var, py::object image) {
-        c.AddImage(var.c_str(), Import(image).GetImage());
-      }, "Add a SimpleITK image as a named variable available to c3d",
-      py::arg("name"), py::arg("image"))
-      .def("push", [](Convert &c, py::object image) {
-        c.PushImage(Import(image).GetImage());
-      }, "Push a SimpleITK image on the c3d stack",
-      py::arg("image"))
-      .def("pop", [](Convert &c) {
-        auto image_ptr = c.PopImage();
-        Export exp(image_ptr);
-        return exp.sitk_image;
-      }, "Pop from the c3d stack and return as SimpleITK image")
-      .def("peek", [](Convert &c, int pos) {
-        auto image_ptr = c.PeekImage(pos);
-        Export exp(image_ptr);
-        return exp.sitk_image;
-      }, "Peek at the c3d stack and return as SimpleITK image",
-      py::arg("pos"))
-      ;
+
+    // Constructor that optionally takes the output and error streams
+    .def(py::init([](py::object sout = py::none(), py::object serr = py::none()) {
+      auto *c = new Convert();
+      obj_map[std::make_pair(c, "sout")] = sout; sout.inc_ref();
+      obj_map[std::make_pair(c, "serr")] = serr; serr.inc_ref();
+      return c;
+    }), "Construct a new instance of ConvertND API",
+         py::arg("out") = py::none(),
+         py::arg("err") = py::none())
+    .def("execute", [](Convert &c, const string &cmd, py::object sout, py::object serr) {
+      sout = sout.is(py::none()) ? obj_map[std::make_pair(&c, "sout")] : sout;
+      sout = sout.is(py::none()) ? py::module_::import("sys").attr("stdout") : sout;
+      serr = serr.is(py::none()) ? obj_map[std::make_pair(&c, "serr")] : serr;
+      serr = serr.is(py::none()) ? py::module_::import("sys").attr("stderr") : serr;
+      py::scoped_ostream_redirect r_out(std::cout, sout);
+      py::scoped_ostream_redirect r_err(std::cerr, serr);
+      c.ExecuteNoFormatting(cmd.c_str());
+    }, "Execute one or more commands using the c3d command line interface",
+         py::arg("command"),
+         py::arg("out") = py::none(),
+         py::arg("err") = py::none())
+    .def("add_image", [](Convert &c, const string &var, py::object image) {
+      c.AddImage(var.c_str(), Import(image).GetImage());
+    }, "Add a SimpleITK image as a named variable available to c3d",
+         py::arg("name"), py::arg("image"))
+    .def("get_image", [](Convert &c, const string &var) {
+      auto image_ptr = c.GetImage(var.c_str());
+      Export exp(image_ptr);
+      return exp.sitk_image;
+    }, "Get a SimpleITK image for a named variable in c3d",
+         py::arg("name"))
+    .def("push", [](Convert &c, py::object image) {
+      c.PushImage(Import(image).GetImage());
+    }, "Push a SimpleITK image on the c3d stack",
+         py::arg("image"))
+    .def("pop", [](Convert &c) {
+      auto image_ptr = c.PopImage();
+      Export exp(image_ptr);
+      return exp.sitk_image;
+    }, "Pop from the c3d stack and return as SimpleITK image")
+    .def("peek", [](Convert &c, int pos) {
+      auto image_ptr = c.PeekImage(pos);
+      Export exp(image_ptr);
+      return exp.sitk_image;
+    }, "Peek at the c3d stack and return as SimpleITK image",
+         py::arg("pos"))
+    ;
 }
 
 PYBIND11_MODULE(picsl_c3d, m) {
