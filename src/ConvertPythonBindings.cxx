@@ -157,13 +157,20 @@ public:
     // Generate a simple ITK image from this
     this->sitk_image = sitk.attr("GetImageFromArray")(arr, false);
 
+    // For finding the origin, we must consider the special case when the
+    // index is non-zero. SimpleITK does not support non-zero indices, so
+    // we must adjust the origin accordingly.
+    RegionType region = image->GetBufferedRegion();
+    PointType origin_adjusted;
+    image->TransformIndexToPhysicalPoint(region.GetIndex(), origin_adjusted);
+
     // Update the spacing, etc
     std::array<double, VDim> spacing, origin;
     std::array<double, VDim*VDim> dir;
     for(unsigned int i = 0, q = 0; i < VDim; i++)
     {
       spacing[i] = image->GetSpacing()[i];
-      origin[i] = image->GetOrigin()[i];
+      origin[i] = origin_adjusted[i];
       for(unsigned int j = 0; j < VDim; j++, q++)
         dir[q] = image->GetDirection()[i][j];
     }
