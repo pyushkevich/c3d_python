@@ -37,7 +37,7 @@ IF(FETCH_DEPENDENCIES)
     FetchContent_Declare(
         Convert3D
         GIT_REPOSITORY https://github.com/pyushkevich/c3d.git
-        GIT_TAG        master
+        GIT_TAG        v1.4.6
     )
     FetchContent_MakeAvailable(Convert3D)
     INCLUDE_DIRECTORIES(${convert3d_SOURCE_DIR}/api)
